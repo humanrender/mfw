@@ -38,4 +38,4 @@ class MFW.Drawable extends MFW.DisplayList
 
   on_resize: =>
     @resize()
-    @draw()
+    @render()
