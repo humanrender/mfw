@@ -1,14 +1,22 @@
-//= require ./_environment
-//= require_tree ./mfw
+#= require ./_environment
+#= require_tree ./mfw
 
-class MFW.Viewport extends MFW.Drawable
-  draw: ->
-    @context.strokeStyle = "#000000";
-    @context.fillStyle = "#FFFF00";
-    @context.beginPath();
-    @context.arc(100,100,50,0,Math.PI*2,true);
-    @context.closePath();
-    @context.stroke();
-    @context.fill();
+class MFW.Application
+  constructor: ->
+    @viewport = new MFW.Viewport "viewport"
 
-new MFW.Viewport "viewport"
+    @node = node = MFW.Nodes.create_node()
+    @viewport.append node
+    node.start()
+    @node.x = node.parent.width/2
+    @node.y = node.parent.height/2
+
+    @play()
+
+  play: ->
+    requestAnimationFrame @on_play
+  on_play: =>
+    @viewport.render()
+    requestAnimationFrame @on_play
+
+new MFW.Application()

@@ -1,7 +1,10 @@
-class MFW.Drawable
-  constructor: (drawable_id) ->
+#= require ./_display_list
+class MFW.Drawable extends MFW.DisplayList
+  constructor: (drawable_id, options) ->
+    super options
     @drawable = @get_drawing_area(drawable_id)
     @context = @get_context(@drawable)
+
     @init()
   get_drawing_area: (id) ->
     document.getElementById id
@@ -12,19 +15,25 @@ class MFW.Drawable
     window.addEventListener "resize", @on_resize
 
     @resize()
-    @draw()
+    @render(@context)
     return false
 
 
   # Public Methods
 
   resize: =>
-    @drawable.width = window.innerWidth;
-    @drawable.height = window.innerHeight;
-  draw: ->
-    # Drawing code goes here
-  
+    @width = window.innerWidth;
+    @height = window.innerHeight;
+    @invalidate "size"
 
+  render: ->
+    @context.clearRect 0, 0, @width, @height
+    super @context
+    if !@validations.size
+      @drawable.width = @width
+      @drawable.height = @height
+      @validate "size"
+  
   # Event Listeners
 
   on_resize: =>
